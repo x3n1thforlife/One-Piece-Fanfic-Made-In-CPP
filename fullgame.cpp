@@ -19,6 +19,13 @@ void dialogueScript() {
 	dialogue[0] = "\"Hey! Nami! erm... Umm...";
 }
 
+// Separate with a Line
+void printLine() {
+	for (int i = 0; i < 100; ++i) {
+		cout << "-";
+	}
+}
+
 // Input Key
 void choice() {
     choiceKey = getch();
@@ -72,6 +79,9 @@ void warningScreen() {
     cout << endl;
     cout << "  Viewer Discretion is Advised. (18+)   " << endl;
     cout << endl;
+    printLine();
+    cout << endl;
+    cout << endl;
     pressKey();
     clearLines();
 }
@@ -82,15 +92,12 @@ void introScreen() {
 	cout << "            \" R E B O R N \"             " << endl;
 	cout << endl;
 	cout << "     in East Blue with the Eight Gates    " << endl;
+	cout << endl;
+	printLine();
 	cout << endl;	
 	cout << endl;
 	pressKey();
 	clearLines();
-}
-
-// All Scenes
-void sceneView() {
-	
 }
 
 // Dealing Boss Damage
@@ -118,6 +125,9 @@ void startScreen() {
     cout << setw(4) << "A D   M A J O R E M   D E I   G L O R I A M" << setw(3) << endl;
     cout << endl;
     cout << setw(6) << "A project of Ateneo de Naga University" << setw(6) << endl;
+    cout << setw(0) << endl;
+    printLine();
+    cout << endl;
     cout << endl;
 	pressKey();
 	clearLines();
@@ -125,6 +135,7 @@ void startScreen() {
 
 // Exit Game
 void exitGame() {
+	clearLines();
 	cout << "----------------------------------------" << endl;
     cout << "|                                      |" << endl;
     cout << "|    Are you sure you want to quit?    |" << endl;
