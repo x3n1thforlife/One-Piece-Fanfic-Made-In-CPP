@@ -13,29 +13,6 @@ bool continueGame = true;
 bool gamePaused = false;
 char choiceKey;
 
-// Dialogue Script
-void dialogueScript() {
-	vector<string> dialogue;
-	dialogue[0] = "\"Hey! Nami! erm... Umm...";
-}
-
-// Separate with a Line
-void printLine() {
-	for (int i = 0; i < 100; ++i) {
-		cout << "-";
-	}
-}
-
-// Input Key
-void choice() {
-    choiceKey = getch();
-}
-
-// Clear Input Key
-void clearKey() {
-	choiceKey = '\0';
-}
-
 // Clear Lines
 void clearLines() {
 	system("cls");
@@ -47,13 +24,55 @@ void pressKey() {
 }
 
 // Player Details
-string playerName = "Keigan";
-string playerNickname = "Kei";
+string playerName;
+string playerNickname;
+string storyName = "Keigan Lee";
+string storyNickname = "Kei";
+string storyAge = "18 (3 months younger than Nami)";
+string storyTitle = "Jet";
+string storyRanking = "3rd (behind Zoro and front of Sanji)";
+string storyPosition = "Shinobi, Accountant";
 int playerHP = 50;
 int playerATK = 10;
 int playerEND = 15;
 int playerEP = 5;
 int playerREGENEP = 0;
+
+// Separate with a Line
+void printLine() {
+	for (int i = 0; i < 100; ++i) {
+		cout << "-";
+	}
+	cout << endl;
+}
+
+// Player Information
+void playerInfo() {
+	cout << endl;
+	cout << "Full Name: " << storyName << endl;
+	cout << "Nickname: " << storyNickname << " (only by the locals)" << endl;
+	cout << "Age: " << storyAge << endl;
+	cout << "Epithet: " << storyTitle << endl;
+	cout << "Power Ranking: " << storyRanking << endl;
+	cout << "Crew Position: " << storyPosition << endl;
+	cout << endl;
+	cout << "A former #1 college gymnast and cheerdancer, while also the best accountant for his company. Unfortunately, he died due to overwork, and was reincarnated in a place he had never seen before." << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+}
+
+// Input Key
+void choice() {
+    choiceKey = getch();
+}
+
+// Clear Input Key
+void clearKey() {
+	choiceKey = '\0';
+}
 
 // Boss Details
 string bossName = "Arlong the Saw";
@@ -81,7 +100,6 @@ void warningScreen() {
     cout << endl;
     printLine();
     cout << endl;
-    cout << endl;
     pressKey();
     clearLines();
 }
@@ -94,7 +112,6 @@ void introScreen() {
 	cout << "     in East Blue with the Eight Gates    " << endl;
 	cout << endl;
 	printLine();
-	cout << endl;	
 	cout << endl;
 	pressKey();
 	clearLines();
@@ -127,7 +144,6 @@ void startScreen() {
     cout << setw(6) << "A project of Ateneo de Naga University" << setw(6) << endl;
     cout << setw(0) << endl;
     printLine();
-    cout << endl;
     cout << endl;
 	pressKey();
 	clearLines();
@@ -174,12 +190,26 @@ void pauseGame() {
 	}
 }
 
+// Enter Name
+void enterName() {
+	cout << "Before you continue, we want to ask for your name." << endl;
+	cout << endl;
+	cout << "Enter your name here: ";
+	cin >> playerName;
+	cout << endl;
+	cout << "Enter your nickname here: ";
+	cin >> playerNickname;
+	clearLines();
+}
+
 // Play the Full Game
 void playGame() {
    	clearKey();
 	clearLines();
+	enterName();
    	warningScreen();
     introScreen();
+    playerInfo();
 }
 
 // Main Menu
@@ -204,12 +234,11 @@ int main() {
         mainMenu(); // Shows Main Menu
         choice();
         if (choiceKey == 'q' || choiceKey == 'Q') {
-        	exitGame();
+        	exitGame(); // Exit Game
 		}
 		else {
-			playGame();
+			playGame(); // Play Game
 		}
     }
     return 0;
 }
-
