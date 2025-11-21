@@ -26,12 +26,6 @@ void pressKey() {
 // Player Details
 string playerName;
 string playerNickname;
-string storyName = "Keigan Lee";
-string storyNickname = "Kei";
-string storyAge = "18 (3 months younger than Nami)";
-string storyTitle = "Jet";
-string storyRanking = "3rd (behind Zoro and front of Sanji)";
-string storyPosition = "Shinobi, Accountant";
 int playerHP = 50;
 int playerATK = 10;
 int playerEND = 15;
@@ -46,15 +40,27 @@ void printLine() {
 	cout << endl;
 }
 
+// Story Arc 1
+void chapter1() {
+	cout << endl;
+	cout << "Location: " << storySetting[0] << endl;
+	cout << endl;
+	cout << "The Cocoyashi Village is a place full of prosperity and peace in the world." << endl;
+	cout << "You lived there with your love, Nami." << endl;
+}
+
+// Story Settings
+string storySetting[2] = {"Cocoyashi Village", "Polar Tang"}
+
 // Player Information
 void playerInfo() {
 	cout << endl;
-	cout << "Full Name: " << storyName << endl;
-	cout << "Nickname: " << storyNickname << " (only by the locals)" << endl;
-	cout << "Age: " << storyAge << endl;
-	cout << "Epithet: " << storyTitle << endl;
-	cout << "Power Ranking: " << storyRanking << endl;
-	cout << "Crew Position: " << storyPosition << endl;
+	cout << "Full Name: Keigan Lee" << endl;
+	cout << "Nickname: Kei (only by the locals)" << endl;
+	cout << "Age: 18" << endl;
+	cout << "Epithet: Jet" << endl;
+	cout << "Power Ranking: 3rd (behind Zoro and front of Sanji)" << endl;
+	cout << "Crew Position: Shinobi, Accountant" << storyPosition << endl;
 	cout << endl;
 	cout << "A former #1 college gymnast and cheerdancer, while also the best accountant for his company. Unfortunately, he died due to overwork, and was reincarnated in a place he had never seen before." << endl;
 	cout << endl;
@@ -209,7 +215,6 @@ void playGame() {
 	enterName();
    	warningScreen();
     introScreen();
-    playerInfo();
 }
 
 // Main Menu
