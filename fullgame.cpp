@@ -174,7 +174,7 @@ void pauseGame() {
 	    cout << "|                                      |" << endl;
 	    cout << "|             Game Paused!             |" << endl;
 	    cout << "|                                      |" << endl;
-	    cout << "|      Press any key to Continue.      |" << endl;
+	    cout << "|         Press P to Continue.         |" << endl;
 	    cout << "|           Press Q to Quit.           |" << endl;
 	    cout << "|                                      |" << endl;
 	    cout << "----------------------------------------" << endl;
@@ -183,7 +183,7 @@ void pauseGame() {
 	    	clearKey();
 			exitGame();
 		}
-		else {
+		else if (choiceKey == 'p' || choiceKey == 'P') {
 			clearKey();
 			gamePaused = false;
 		}
@@ -221,7 +221,7 @@ void mainMenu() {
     cout << "|                                      |" << endl;
 	cout << "| A fanfic from the anime \"One Piece\"  |" << endl;
 	cout << "|                                      |" << endl;
-    cout << "|    Press any key to start playing.   |" << endl;
+    cout << "|       Press P to start playing.      |" << endl;
     cout << "|           Press Q to Quit.           |" << endl;
     cout << "|                                      |" << endl;
     cout << "----------------------------------------" << endl;
@@ -236,9 +236,10 @@ int main() {
         if (choiceKey == 'q' || choiceKey == 'Q') {
         	exitGame(); // Exit Game
 		}
-		else {
+		else if (choiceKey == 'p' || choiceKey == 'P') {
 			playGame(); // Play Game
 		}
     }
     return 0;
 }
+
