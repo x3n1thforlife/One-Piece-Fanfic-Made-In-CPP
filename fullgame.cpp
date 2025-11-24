@@ -12,6 +12,12 @@ using namespace std;
 bool continueGame = true;
 bool gamePaused = false;
 char choiceKey;
+int bossDamage = 0;
+int playerDamage = 0;
+bool gate1Active = false;
+bool gate2Active = false;
+int gateMastery = 1;
+
 
 // Clear Lines
 void clearLines() {
@@ -23,6 +29,24 @@ void pressKey() {
 	system("pause");
 }
 
+// Separate with a Line
+void printLine() {
+	for (int i = 0; i < 100; ++i) {
+		cout << "-";
+	}
+	cout << endl;
+}
+
+// Input Key
+void pressChoice() {
+    choiceKey = getch();
+}
+
+// Clear Input Key
+void clearKey() {
+	choiceKey = '\0';
+}
+
 // Player Details
 string playerName;
 string playerNickname;
@@ -32,12 +56,100 @@ int playerEND = 15;
 int playerEP = 5;
 int playerREGENEP = 0;
 
-// Separate with a Line
-void printLine() {
-	for (int i = 0; i < 100; ++i) {
-		cout << "-";
+// Boss Details
+string bossName = "Arlong the Saw";
+string bossNickname = "Arlong";
+int bossHP = 2500;
+int bossATK = 520;
+int bossEND = 600;
+
+// Dealing Boss Damage
+void dealBossDamage() {
+	bossDamage = ceil((playerATK - bossEND) / 2);
+	cout << "You deal " << bossDamage << " damage!" << endl;
+	bossHP -= bossDamage;
+	bossDamage = 0; // Reset Damage
+}
+
+// Taking Damage
+void dealPlayerDamage() {
+	playerDamage = ceil((bossATK - playerEND) / 2);
+	cout << "You take " << playerDamage << " damage!" << endl;
+	playerHP -= playerDamage;
+	playerDamage = 0; // Reset Damage
+}
+
+// The 8-Year Loop
+void loopTraining() {
+	for (int i = 1; i <= 48; i++) {
+		cout << "Enter number to increase stats: " << endl;
+		cout << "1 for HP" << endl;
+		cout << "2 for Attack" << endl;
+		cout << "3 for Endurance" << endl;
+		cout << "4 for Energy Points" << endl;
+		cout << "5 for Energy Regeneration" << endl;
+		pressChoice();
+		switch (choiceKey) {
+			case 1:
+				playerHP = 21 + 4 * (i - 1);
+				cout << "Player HP is now " << playerHP << endl;
+				cout << endl;
+				printLine();
+				pressKey();
+				clearLines();
+				break;
+			case 2:
+				playerATK = 11 + 2 * (i − 1);
+				cout << "Player ATK is now " << playerATK << endl;
+				cout << endl;
+				printLine();
+				pressKey();
+				clearLines();
+				break;
+			case 3:
+				playerEND = 15 + 3 * (i − 1);
+				cout << "Player END is now " << playerEND << endl;
+				cout << endl;
+				printLine();
+				pressKey();
+				clearLines();
+				break;
+			case 4:
+				playerEP = 15 + 3 * (i − 1);
+				cout << "Player EP is now " << playerEP << endl;
+				cout << endl;
+				printLine();
+				pressKey();
+				clearLines();
+				break;
+			case 5:
+				playerREGENEP = 2.5 + 0.5 * (i − 1);
+				cout << "Player ATK is now " << playerREGENEP << endl;
+				cout << endl;
+				printLine();
+				pressKey();
+				clearLines();
+				break;
+		}
 	}
-	cout << endl;
+}
+
+// Activating the Gates
+void activateGates() {
+	if (playerEP >= 1.5 * 35) {
+		playerATK *= 1.8;
+	}	
+}
+
+// Max Constant Values
+void declareConstant() {
+	const int maxPlayerHP = playerHP;
+	const int maxBossHP = bossHP;
+	const int maxPlayerATK = playerATK;
+	const int maxPlayerEND = playerEND;
+	const int maxPlayerEP = playerEP;
+	const int maxBossATK = bossATK;
+	const int maxBossEND = bossEND;
 }
 
 // Story Arc 1
@@ -69,23 +181,6 @@ void playerInfo() {
 	pressKey();
 	clearLines();
 }
-
-// Input Key
-void choice() {
-    choiceKey = getch();
-}
-
-// Clear Input Key
-void clearKey() {
-	choiceKey = '\0';
-}
-
-// Boss Details
-string bossName = "Arlong the Saw";
-string bossNickname = "Arlong";
-int bossHP = 2500;
-int bossATK = 520;
-int bossEND = 600;
 
 // Disclaimer
 void warningScreen() {
@@ -123,18 +218,6 @@ void introScreen() {
 	clearLines();
 }
 
-// Dealing Boss Damage
-int dealBossDamage(int bossDamage) {
-	bossDamage = ceil((playerATK - bossEND) / 2);
-	return bossDamage;
-}
-
-// Player Taking Damage
-int dealPlayerDamage(int playerDamage) {
-	playerDamage = ceil((bossATK - playerEND) / 2);
-	return playerDamage;
-}
-
 // Startup Screen
 void startScreen() {
     cout << "\"To give, and not to count the cost" << endl;
@@ -165,7 +248,7 @@ void exitGame() {
     cout << "|     Press Y for Yes, or N for No     |" << endl;
     cout << "|                                      |" << endl;
     cout << "----------------------------------------" << endl;
-    choice();
+    pressChoice();
     if (choiceKey == 'y' || choiceKey == 'Y') {
         continueGame = false;
         clearKey();
@@ -184,7 +267,7 @@ void pauseGame() {
 	    cout << "|           Press Q to Quit.           |" << endl;
 	    cout << "|                                      |" << endl;
 	    cout << "----------------------------------------" << endl;
-	    choice();
+	    pressChoice();
 	    if (choiceKey == 'q' || choiceKey == 'Q') {
 	    	clearKey();
 			exitGame();
@@ -247,3 +330,4 @@ int main() {
     }
     return 0;
 }
+
