@@ -16,7 +16,9 @@ int bossDamage = 0;
 int playerDamage = 0;
 bool gate1Active = false;
 bool gate2Active = false;
-int gateMastery = 1;
+bool gateMastery = false;
+bool playerInTurn = false;
+bool bossInTurn = false;
 
 
 // Clear Lines
@@ -131,14 +133,71 @@ void loopTraining() {
 				clearLines();
 				break;
 		}
+		clearKey();
+	}
+}
+
+// Player in Turn
+void playerTurn() {
+	playerInTurn = true;
+	while (playerInTurn) {
+		pressChoice();
 	}
 }
 
 // Activating the Gates
 void activateGates() {
 	if (playerEP >= 1.5 * 35) {
-		playerATK *= 1.8;
-	}	
+		gate1Active = true;
+		cout << "Gate 1 Activated!" << endl;
+		cout << "Your attacks deal 1.8 more damage!" << endl;
+		cout << "Do you want to unlock Gate 2?" << endl;
+		cout << "Y for Yes, N for No" << endl;
+		pressChoice();
+		if (choiceKey == 'Y' || choiceKey == 'y') {
+			if (playerEP >= 1.5 * 45) {
+				gate2Active = true;
+				playerEP -= 45;
+				cout << "Gate 2 Activated!" << endl;
+				playerATK *= 2.2;
+				cout << "Both gates are active! Your attacks now deal 2.2 more damage!" << endl;
+				dealBossDamage();
+				gateMastery = true;
+			}
+			else {
+				cout << "You don't have enough Energy Points!" << endl;
+			}
+		}
+		else if (choiceKey == 'N' || choiceKey == 'n') {
+			playerEP -= 35;
+			playerATK *= 1.8;
+			dealBossDamage();
+		}
+		if (!gateMastery && playerEP < 7) {
+			playerATK /= 1.5;
+			playerEND /= 1.5;
+		}
+		else if (gateMastery && playerEP < 8) {
+			playerATK /= 1.4;
+			playerEND /= 1.4;
+		}
+		playerInTurn = false;
+	}
+	else {
+		cout << "You don't have enough Energy Points!" << endl;
+	}
+}
+
+// Boss Turn
+void bossTurn() {
+	if (bossHP <= 1600 && bossHP >= 901) {
+		bossATK = 550;
+	}
+	else if (bossHP >= 900 && bossHP >= 1) {
+		bossATK = 600;
+		bossEND = 660;
+	}
+	dealPlayerDamage();
 }
 
 // Max Constant Values
@@ -330,5 +389,6 @@ int main() {
     }
     return 0;
 }
+
 
 
