@@ -14,12 +14,6 @@ bool gamePaused = false;
 char choiceKey;
 int bossDamage = 0;
 int playerDamage = 0;
-bool gate1Active = false;
-bool gate2Active = false;
-bool gateMastery = false;
-bool playerInTurn = false;
-bool bossInTurn = false;
-
 
 // Clear Lines
 void clearLines() {
@@ -64,22 +58,6 @@ string bossNickname = "Arlong";
 int bossHP = 2500;
 int bossATK = 520;
 int bossEND = 600;
-
-// Dealing Boss Damage
-void dealBossDamage() {
-	bossDamage = ceil((playerATK - bossEND) / 2);
-	cout << "You deal " << bossDamage << " damage!" << endl;
-	bossHP -= bossDamage;
-	bossDamage = 0; // Reset Damage
-}
-
-// Taking Damage
-void dealPlayerDamage() {
-	playerDamage = ceil((bossATK - playerEND) / 2);
-	cout << "You take " << playerDamage << " damage!" << endl;
-	playerHP -= playerDamage;
-	playerDamage = 0; // Reset Damage
-}
 
 // The 8-Year Loop
 void loopTraining() {
@@ -134,57 +112,6 @@ void loopTraining() {
 				break;
 		}
 		clearKey();
-	}
-}
-
-// Player in Turn
-void playerTurn() {
-	playerInTurn = true;
-	while (playerInTurn) {
-		pressChoice();
-	}
-}
-
-// Activating the Gates
-void activateGates() {
-	if (playerEP >= 1.5 * 35) {
-		gate1Active = true;
-		cout << "Gate 1 Activated!" << endl;
-		cout << "Your attacks deal 1.8 more damage!" << endl;
-		cout << "Do you want to unlock Gate 2?" << endl;
-		cout << "Y for Yes, N for No" << endl;
-		pressChoice();
-		if (choiceKey == 'Y' || choiceKey == 'y') {
-			if (playerEP >= 1.5 * 45) {
-				gate2Active = true;
-				playerEP -= 45;
-				cout << "Gate 2 Activated!" << endl;
-				playerATK *= 2.2;
-				cout << "Both gates are active! Your attacks now deal 2.2 more damage!" << endl;
-				dealBossDamage();
-				gateMastery = true;
-			}
-			else {
-				cout << "You don't have enough Energy Points!" << endl;
-			}
-		}
-		else if (choiceKey == 'N' || choiceKey == 'n') {
-			playerEP -= 35;
-			playerATK *= 1.8;
-			dealBossDamage();
-		}
-		if (!gateMastery && playerEP < 7) {
-			playerATK /= 1.5;
-			playerEND /= 1.5;
-		}
-		else if (gateMastery && playerEP < 8) {
-			playerATK /= 1.4;
-			playerEND /= 1.4;
-		}
-		playerInTurn = false;
-	}
-	else {
-		cout << "You don't have enough Energy Points!" << endl;
 	}
 }
 
@@ -389,6 +316,7 @@ int main() {
     }
     return 0;
 }
+
 
 
 
