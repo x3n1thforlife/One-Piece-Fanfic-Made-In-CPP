@@ -143,8 +143,8 @@ void chapter1() {
 	cout << "Location: " << storySetting[0] << endl;
 	cout << endl;
 	cout << "The Cocoyashi Village is a place full of prosperity and peace in the world." << endl;
-	cout << "You lived there with your love, Nami." << endl;
-	cout << "You watched her draw her first map, and glance in front of her eyes." << endl;
+	cout << "There once lived a man named Keigan Lee, with his love, Nami." << endl;
+	cout << "He watched her draw her first map, and glance in front of her eyes." << endl;
 	cout << endl;
 	printLine();
 	cout << endl;
@@ -152,8 +152,8 @@ void chapter1() {
 	clearLines();
 	cout << "Location: " << storySetting[0] << endl;
 	cout << endl;
-	cout << "One of your best friends, Bell-mere, checking the budget and price of her delicious mikans." << endl;
-	cout << "When things get really rough, you cook extra tasty dishes inside her household, making Bell-mere eat this instead of mikans." << endl;
+	cout << "One of Keigan\'s best friends, Bell-mere, checking the budget and price of her delicious mikans." << endl;
+	cout << "When things get really rough, Keigan cooks extra tasty dishes inside her household, making Bell-mere eat this instead of mikans." << endl;
 	cout << "The low demand for mikan lasted for months, as time passes by." << endl;
 	cout << endl;
 	printLine();
@@ -162,8 +162,8 @@ void chapter1() {
 	clearLines();
 	cout << "Location: " << storySetting[0] << endl;
 	cout << endl;
-	cout << "Inside of Genzo's house, you started helping him clean the sheriff's office, as this can go really messy." << endl;
-	cout << "As you embraced Nami, you realize that the family is in a financial situation." << endl;
+	cout << "Inside of Genzo's house, Keigan started helping him clean the sheriff's office, as this can go really messy." << endl;
+	cout << "As Keigan embraced Nami, he realizes that the family is in a financial situation." << endl;
 	cout << "The next time it came, both Nojiko and Nami have terrible fever, high taxes being paid for living, let alone being 100K Beli for an adult and 50K for children." << endl;
 	cout << endl;
 	printLine();
@@ -182,7 +182,7 @@ void chapter1() {
 	clearLines();
 	cout << "Location: " << storySetting[0] << endl;
 	cout << endl;
-	cout << "You here the voices of the fishmen stating their demands:" << endl;
+	cout << "Keigan hears the voices of the fishmen stating their demands:" << endl;
 	cout << endl;
 	cout << "Arlong: \"I came here to colonize this island. Pay tribute to me or BE EXECUTED.\"" << endl;
 	cout << endl;
@@ -198,13 +198,42 @@ void chapter1() {
 	cout << "Bell-mere: \"I cannot pay you real money. How about my children?" << endl;
 	cout << endl;
 	cout << "But, he does not like people paying any money. He then takes out Bell-mere with one strike." << endl;
-	cout << "You can only watch as here body drops to the sand." << endl;
+	cout << "Keigan can only watch as here body drops to the sand." << endl;
 	cout << endl;
 	cout << "Arlong: \"Children, huh? Pitiful.\"" << endl;
 	cout << "Keigan: Wait, wait, wait, wait a second, what happened?" << endl;
 	cout << "Arlong: \"GRRRRRAAAAHHHHH!!!\"" << endl;
-	cout << "Keigan: \"*gasps*, *stutters* B-B-B-Bell?\"" << endl;
+	cout << "Keigan: \"*gasps*, *stutters* B-B-B-Bell-mere?\"" << endl;
 	cout << "Keigan: \"NOOOOOOOOOOOOOOOOO!!!!!\"" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << "Location: " << storySetting[0] << endl;
+	cout << endl;
+	cout << "Girls: \"Bell-mere!\"" << endl;
+	cout << endl;
+	cout << "The girls weep on Bell-mere, shot to the body." << endl;
+	cout << "Meanwhile, Keigan attempts to wound Arlong by throwing a punch at him." << endl;
+	cout << endl;
+	cout << "Keigan: \"You\'ll pay for this!\"" << endl;
+	cout << "Arlong: \"You wanna try hitting me? Ha! Prove it.\"" << endl;
+	cout << endl;
+	cout << "Keigan: \"*throws a punch at him* HIIIYYYAAAAAHHHH!!!\"" << endl;
+	cout << "Arlong: \"*takes the hit unfazed HMMM. Is this all you got?\"" << endl;
+	cout << "Arlong: \"Take this! *smashes Keigan to the shore*\"" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << "Location: " << storySetting[0] << endl;
+	cout << endl;
+	cout << "Arlong: \"Let me call upon you the people of this village: The weak shall belong to the deep.\"" << endl;
+	cout << endl;
+	cout << "Keigan is thrown to the ocean. Everyone else became hostage for the Fishman Captain." << endl;
+	cout << "There is still hope for the faithful of Cocoyashi Village. Keigan's unconcious body still floating until it reached someone\'s ship." << endl;
 	cout << endl;
 	printLine();
 	cout << endl;
@@ -339,6 +368,7 @@ int main() {
     }
     return 0;
 }
+
 
 
 
