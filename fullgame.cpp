@@ -13,11 +13,7 @@ bool continueGame = true;
 int choiceKey;
 int bossDamage = 0;
 int playerDamage = 0;
-bool gate1Active = false;
-bool gate2Active = false;
-bool gateMastery = false;
-bool playerInTurn = false;
-bool bossInTurn = false;
+
 
 // Clear Lines
 void clearLines() {
@@ -122,6 +118,13 @@ void loopTraining() {
 // First Story Arc
 void chapter1() {
 	cout << endl;
+	cout << "CHAPTER 1" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
 	cout << "Location: Cocoyashi Village" << endl;
 	cout << endl;
 	cout << "The Cocoyashi Village is a place full of prosperity and peace in the world." << endl;
@@ -132,6 +135,7 @@ void chapter1() {
 	cout << endl;
 	pressKey();
 	clearLines();
+	cout << endl;
 	cout << "Location: Cocoyashi Village" << endl;
 	cout << endl;
 	cout << "One of Keigan\'s best friends, Bell-mere, checking the budget and price of her delicious mikans." << endl;
@@ -142,6 +146,7 @@ void chapter1() {
 	cout << endl;
 	pressKey();
 	clearLines();
+	cout << endl;
 	cout << "Location: Cocoyashi Village" << endl;
 	cout << endl;
 	cout << "Inside of Genzo's house, Keigan started helping him clean the sheriff's office, as this can go really messy." << endl;
@@ -150,7 +155,9 @@ void chapter1() {
 	cout << endl;
 	printLine();
 	cout << endl;
+	pressKey();
 	clearLines();
+	cout << endl;
 	cout << "Location: Cocoyashi Village" << endl;
 	cout << endl;
 	cout << "Everything seemed fine for now, until a hostile enemy just arrived." << endl;
@@ -161,6 +168,7 @@ void chapter1() {
 	cout << endl;
 	pressKey();
 	clearLines();
+	cout << endl;
 	cout << "Location: Cocoyashi Village" << endl;
 	cout << endl;
 	cout << "Keigan hears the voices of the fishmen stating their demands:" << endl;
@@ -174,6 +182,7 @@ void chapter1() {
 	cout << endl;
 	pressKey();
 	clearLines();
+	cout << endl;
 	cout << "Location: Cocoyashi Village" << endl;
 	cout << endl;
 	cout << "Bell-mere: \"I cannot pay you real money. How about my children?" << endl;
@@ -191,6 +200,7 @@ void chapter1() {
 	cout << endl;
 	pressKey();
 	clearLines();
+	cout << endl;
 	cout << "Location: Cocoyashi Village" << endl;
 	cout << endl;
 	cout << "Girls: \"Bell-mere!\"" << endl;
@@ -209,6 +219,7 @@ void chapter1() {
 	cout << endl;
 	pressKey();
 	clearLines();
+	cout << endl;
 	cout << "Location: Cocoyashi Village" << endl;
 	cout << endl;
 	cout << "Arlong: \"Let me call upon you the people of this village: The weak shall belong to the deep.\"" << endl;
@@ -223,8 +234,29 @@ void chapter1() {
 }
 
 void chapter2() {
+	cout << endl;
+	cout << "CHAPTER 2" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
 	cout << "Location: Jolly Roger" << endl;
 	cout << endl;
+	cout << "Keigan's body is still drifting on open ocean for 3 days straight." << endl;
+	cout << "That is until the Good Heart Pirates saw a man overboard and pulled him up on the ship." << endl;
+	cout << "A \"doctor\" patched him up and laid him on the couch." << endl;
+	cout << "When Keigan got up, he was confused." << endl;
+	cout << endl;
+	cout << "???: \"So you're up already, boy? Good.\"" << endl;
+	cout << "Keigan: \"Where am I? How long was I out?\"" << endl;
+	cout << "???: \"Well, you have been out cold for 3 whole days, and we took you in the ship.\"" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
 }
 
 // Disclaimer
@@ -351,6 +383,7 @@ int main() {
     }
     return 0;
 }
+
 
 
 
