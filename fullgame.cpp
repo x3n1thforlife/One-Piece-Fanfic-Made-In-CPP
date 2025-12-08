@@ -10,7 +10,7 @@ using namespace std;
 
 // Universal Values
 bool continueGame = true;
-bool bossDefeated;
+bool bossDefeated = false;
 int choiceKey;
 
 // Clear Lines
@@ -272,6 +272,15 @@ void chapter2() {
 	cout << "Keigan: \"Where am I? How long was I out?\"" << endl;
 	cout << "???: \"Well, you have been out cold for 3 whole days, and we took you in the ship.\"" << endl;
 	cout << endl;
+	cout << "Later, he introduces himself as Doctor Quack. He gives you a nice little emblem for his gratitude." << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << "Good Heart Pirate Crest acquired!" << endl;
+	cout << endl;
 	printLine();
 	cout << endl;
 	pressKey();
@@ -379,6 +388,8 @@ void bossFight() {
 	int playerTurn = 0; // Current Turn
 	int bossDamage = 0; // Boss Damage
 	int playerDamage = 0; // Player Damage
+	int barrageCooldown = 0; // Barrage Cooldown
+	int	lotusCooldown = 0; // Lotus Cooldown
 	bool fightOver = false; // Full Fight
 	bool playerInTurn = false; // Player in Turn
 	bool canActivateGate = false; // Gate Available
@@ -387,12 +398,29 @@ void bossFight() {
 	bool hasUsedGateBefore = false; // Gate Used Once
 	bool hasMasteredGates = false; // Gate Mastery
 	bool chainsEnabled = false; // Use Chains
-	bool hasUsedKeiganBarrage = false; // Keigan Barrage Used
-	bool hasUsedChainedBarrage = false; // Chain Barrage Used
 	bool hasUsedBarrage = false; // Barrage Used
 	bool hasUsedFrontLotus = false; // Front Lotus Used
+	bool staggeredArlong = false; // Arlong Staggered
+	bool disarmArlong = false; // Arlong Disarmed
 	while (!fightOver) {
 		++playerTurn;
+		if (lotusCooldown > 0) {
+			--lotusCooldown;
+		}
+		if (barrageCooldown > 0) {
+			--barrageCooldown;
+		}
+		if (gate1Activated) {
+			if (hasMasteredGates) {
+				playerEP -= 5;
+			}
+			else {
+				playerEP -= 7;
+			}
+		}
+		else if (gate2Activated) {
+			playerEP -= 9;
+		}
 		playerInTurn = true;
 		while (playerInTurn) {
 			if (playerTurn == 3) {
@@ -408,6 +436,7 @@ void bossFight() {
 			cout << endl;
 			cout << "Choose your ability: " << endl;
 			cout << endl;
+			cout << "0. Normal Attack" << endl;
 			cout << "1. Enable Lotus Series" << endl;
 			cout << "2. Kei-ga-n Barrage (-12 EP and 2 skips)" << endl;
 			cout << "3. Chain Barrage (-14 EP and 2 skips)" << endl;
@@ -428,6 +457,15 @@ void bossFight() {
 			cout << endl;
 			pressChoice();
 			switch (choiceKey) {
+				case 0:
+					clearKey();
+					bossDamage = ceil((playerATK - bossEND) / 2);
+					bossHP -= bossDamage;
+					cout << endl;
+					cout << "Keigan: \"HAAYYYYAAAH!!!\"" << endl;
+					cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
+					bossDamage = 0;
+					break;
 				case 1:
 					clearKey();	
 					cout << "Activate Lotus Series?" << endl;
@@ -447,54 +485,80 @@ void bossFight() {
 					break;
 				case 2:
 					clearKey();	
-					cout << endl;
-					cout << "Attack with Kei-ga-n Barrage?" << endl;
-					cout << endl;
-					cout << "1 for Yes, 2 for No" << endl;
-					cout << endl;
-					pressChoice();
-					switch (choiceKey) {
-						case 1:
-							clearKey();
-							hasUsedBarrage = true;
-							hasUsedKeiganBarrage = true;
-							bossDamage = ceil(((1.35 * playerATK) - (0.95 * bossEND)) / 2);
-							bossHP -= bossDamage;
-							bossDamage = 0;
-							cout << "Keigan: \"Take this, K E I - G A - N BARRAGE!!!\"" << endl;
+					if (playerEP >= 12) {
+						if (barrageCooldown = 0) {	
 							cout << endl;
-							cout << "You deal " << 1.35 * playerATK << " damage to Arlong!" << endl;
-							playerInTurn = false;
-							break;
-						case 2:
-							clearKey();
-							break;
+							cout << "Attack with Kei-ga-n Barrage?" << endl;
+							cout << endl;
+							cout << "1 for Yes, 2 for No" << endl;
+							cout << endl;
+							pressChoice();
+							switch (choiceKey) {
+								case 1:
+									clearKey();
+									hasUsedBarrage = true;
+									playerEP -= 12;
+									bossDamage = ceil(((1.35 * playerATK) - (0.95 * bossEND)) / 2);
+									bossHP -= bossDamage;
+									cout << "Keigan: \"Take this, K E I - G A - N BARRAGE!!!\"" << endl;
+									cout << endl;
+									cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
+									bossDamage = 0;
+									playerInTurn = false;
+									barrageCooldown = 3;
+									break;
+								case 2:
+									clearKey();
+									break;
+							}
+						}
+						else {
+							cout << endl;
+							cout << "Ability on Cooldown!" << endl;
+						}
+					}
+					else {
+						cout << endl;
+						cout << "Not enough Energy Points!" << endl;
 					}
 					break;
 				case 3:
-					clearKey();	
-					cout << endl;
-					cout << "Attack with Chained Barrage?" << endl;
-					cout << endl;
-					cout << "1 for Yes, 2 for No" << endl;
-					cout << endl;
-					pressChoice();
-					switch (choiceKey) {
-						case 1:
-							clearKey();
-							hasUsedBarrage = true;
-							hasUsedKeiganBarrage = true;
-							bossDamage = ceil(((1.5 * playerATK) - (0.90 * bossEND)) / 2);
-							bossHP -= bossDamage;
-							bossDamage = 0;
-							cout << "Keigan: \"Watch this, Arlong! CHAAAAIIINNNNEEEED BARRAGE!!!\"" << endl;
+					if (playerEP >= 14)	{
+						if (barrageCooldown = 0) {	
+							clearKey();	
 							cout << endl;
-							cout << "You deal " << 1.5 * playerATK << " damage to Arlong!" << endl;
-							playerInTurn = false;
-							break;
-						case 2:
-							clearKey();
-							break;
+							cout << "Attack with Chained Barrage?" << endl;
+							cout << endl;
+							cout << "1 for Yes, 2 for No" << endl;
+							cout << endl;
+							pressChoice();
+							switch (choiceKey) {
+								case 1:
+									clearKey();
+									hasUsedBarrage = true;
+									playerEP -= 14;
+									bossDamage = ceil(((1.5 * playerATK) - (0.90 * bossEND)) / 2);
+									bossHP -= bossDamage;
+									cout << "Keigan: \"Watch this, Arlong! CHAAAAIIINNNNEEEED BARRAGE!!!\"" << endl;
+									cout << endl;
+									cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
+									bossDamage = 0;
+									playerInTurn = false;
+									barrageCooldown = 3;
+									break;
+								case 2:
+									clearKey();
+									break;
+							}
+						}
+						else {
+							cout << endl;
+							cout << "Ability on cooldown!" << endl;
+						}
+					}
+					else {
+						cout << endl;
+						cout << "Not enough Energy Points!" endl;
 					}
 					break;
 				case 4:
@@ -504,26 +568,113 @@ void bossFight() {
 						if (gate1Activated || gate2Activated) {
 							if (hasUsedBarrage) {
 								cout << endl;
-								cout << "Attack with Front Lotus now?" << endl;
+								cout << "Choose Lotus Attack:" << endl;
 								cout << endl;
-								cout << "1 for Yes, 2 for No" << endl;
-								cout << endl;
-								pressChoice();
+								cout << "1. Front Lotus (Omote Renge)" << endl;
+								cout << "2. Reverse Lotus (Ura Renge)";
+								if (!gate1Activated || !gate2Activated || !hasUsedFrontLotus) {
+									cout << " (disabled)" << endl;
+								}
+								else {
+									cout << endl;
+								}
 								switch (choiceKey) {
-									case 1:
-										clearKey();
-										hasUsedBarrage = true;
-										hasUsedKeiganBarrage = true;
-										bossDamage = ceil(((4.75 * playerATK) - (0.7 * bossEND)) / 2);
-										bossHP -= bossDamage;
-										bossDamage = 0;
-										cout << "Keigan: \"Taste this with the might of my OMOTE RENGE!\"" << endl;
-										cout << endl;
-										cout << "You deal " << 4.75 * playerATK << " damage to Arlong!" << endl;
-										playerInTurn = false;
+									case 1:	
+										if (playerEP >= 13) {
+											cout << endl;
+											cout << "Attack with Front Lotus now?" << endl;
+											cout << endl;
+											cout << "1 for Yes, 2 for No" << endl;
+											cout << endl;
+											pressChoice();
+											switch (choiceKey) {
+												case 1:
+													clearKey();
+													if (playerEP >= 13) {
+														playerEP -= 13;
+														bossDamage = ceil(((3.8 * playerATK) - (0.7 * bossEND)) / 2);
+														bossHP -= bossDamage;
+														cout << "Keigan: \"Taste this with the might of my OMOTE RENGE!\"" << endl;
+														cout << endl;
+														cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
+														bossDamage = 0;
+														staggeredArlong = true;
+														playerInTurn = false;
+													}
+													else {
+														cout << endl;
+														cout << "Not enough Energy Points!" << endl;
+													}
+													break;
+												case 2:
+													clearKey();
+													break;
+											}
+										}
+										else {
+											cout << endl;
+											cout << "Not enough Energy Points!" << endl;
+										}
 										break;
 									case 2:
-										clearKey();
+										if (lotusCooldown = 0) {
+											cout << endl;
+											cout << "Attack with Reverse Lotus now?" << endl;
+											cout << endl;
+											cout << "1 for Yes, 2 for No" << endl;
+											cout << endl;
+											pressChoice();
+											switch (choiceKey) {
+												case 1:
+													clearKey();
+													if (playerEP >= 25) {	
+														if (hasUsedFrontLotus) {
+															if (!gate2Activated) {	
+																playerEP -= 25;
+																cout << endl;
+																bossDamage = ceil(((5 * playerATK) - (0.65 * bossEND)) / 2);
+																bossHP -= bossDamage;
+																cout << "Keigan: \"Burn to ashes with the power of my URA RENGE!\"" << endl;
+																cout << endl;
+																cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
+																bossDamage = 0;
+																playerInTurn = false; 
+																staggeredArlong = true;
+																lotusCooldown = 6;
+															}
+															else {
+																playerEP -= 25;
+																cout << endl;
+																bossDamage = ceil(((6.25 * playerATK) - (0.65 * bossEND)) / 2);
+																bossHP -= bossDamage;
+																cout << "Keigan: \"Burn to ashes with the power of my URA RENGE!\"" << endl;
+																cout << endl;
+																cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
+																bossDamage = 0;
+																playerInTurn = false; 
+																staggeredArlong = true;
+																lotusCooldown = 6;
+															}
+														}
+														else {
+															cout << endl;
+															cout << "You must use Front Lotus in the last turn!" << endl;
+														}
+													}
+													else {
+														cout << endl;
+														cout << "Not enough Energy Points!" << endl;
+													}
+													break;
+												case 2;
+													clearKey();
+													break;
+											}
+										}
+										else {
+											cout << endl;
+											cout << "Ability on cooldown!" << endl;
+										}
 										break;
 								}
 							}
@@ -543,6 +694,156 @@ void bossFight() {
 					}
 					break;
 				case 5:
+					clearKey();
+					cout << endl;
+					cout << "Activate the Eight Gates:" << endl;
+					cout << endl;
+					cout << "1. Activate Gate 1" << endl;
+					cout << "2. Activate Gate 2" << endl;
+					cout << endl;
+					pressChoice();
+					switch (choiceKey) {
+						case 1:
+							clearKey();
+							if (gate1Activated) {
+								cout << endl;
+								cout << "Gate of Opening already active!" << endl;
+								cout << endl;
+								cout << "Do you want to disable Gate of Opening?" << endl;
+								cout << endl;
+								cout << "1 for Yes, 2 for No" << endl;
+								cout << endl;
+								pressChoice();
+								switch (choiceKey) {
+									case 1:
+										gate1Activated = false;
+										if (!hasMasteredGates) {
+											playerATK /= 1.4;
+											playerEND /= 1.4;
+											cout << endl;
+											cout << "Attack Power now reduced to " << playerATK << endl;
+											cout << "Endurance now reduced to " << playerEND << endl;
+										}
+										break;
+									case 2:
+										cout << endl;
+										break;
+								}
+							}
+							else {
+								if (!hasUsedGateBefore) {
+									if (!hasMasteredGates) {
+										if (playerEP >= 35) {	
+											playerEP -= 35;
+											playerATK *= 1.8;
+											cout << endl;
+											cout << "Gate of Opening active!" << endl;
+											cout << endl;
+											cout << "Your Attack increases by 1.8!" << endl;
+											cout << "Current ATK: " << playerATK << endl;
+										}
+										else {
+											cout << endl;
+											cout << "Not enough Energy Points!" << endl;
+										}
+									}
+									else {
+										if (playerEP >= 30) {
+											playerEP -= 30;
+											playerATK = 1.8;
+											cout << endl;
+											cout << "Gate of Opening active!" << endl;
+											cout << "Your Attack increases by 1.8!" << endl;
+											cout << "Current ATK: " << playerATK << endl;
+											cout << endl;
+											cout << "Do you wish to unlock Gate of Healing?" << endl;
+											cout << endl;
+											cout << "1 for Yes, 2 for No" << endl;
+											cout << endl;
+											pressChoice();
+											switch (choiceKey) {
+												case 1:
+													if (playerEP >= 10) {
+														playerEP -= 10;
+														playerATK *= 2.2;
+														cout << endl;
+														cout << "Your Attack increases by 2.2!" << endl;
+														cout << "Current ATK: " << playerATK << endl;
+													}
+													else {
+														cout << endl;
+														cout << "Not enough Energy Points!" << endl;
+													}
+													break;
+												case 2:
+													cout << endl;
+													break;
+											}
+										}
+										else {
+											cout << endl;
+											cout << "Not enough Energy Points!" << endl;
+										}
+									}
+								}
+								else {
+									if (!hasMasteredGates) {
+										if (playerEP >= 1.5 * 35) {	
+											playerEP -= 1.5 * 35;
+											playerATK *= 1.8;
+											cout << endl;
+											cout << "Gate of Opening active!" << endl;
+											cout << endl;
+											cout << "Your Attack increases by 1.8!" << endl;
+											cout << "Current ATK: " << playerATK << endl;
+										}
+										else {
+											cout << endl;
+											cout << "Not enough Energy Points!" << endl;
+										}
+									}
+									else {
+										if (playerEP >= 1.5 * 30) {
+											playerEP -= 1.5 * 30;
+											playerATK = 1.8;
+											cout << endl;
+											cout << "Gate of Opening active!" << endl;
+											cout << "Your Attack increases by 1.8!" << endl;
+											cout << "Current ATK: " << playerATK << endl;
+											cout << endl;
+											cout << "Do you wish to unlock Gate of Healing?" << endl;
+											cout << endl;
+											cout << "1 for Yes, 2 for No" << endl;
+											cout << endl;
+											pressChoice();
+											switch (choiceKey) {
+												case 1:
+													if (playerEP >= 1.5 * 10) {
+														playerEP -= 1.5 * 10;
+														playerATK *= 2.2;
+														cout << endl;
+														cout << "Your Attack increases by 2.2!" << endl;
+														cout << "Current ATK: " << playerATK << endl;
+													}
+													else {
+														cout << endl;
+														cout << "Not enough Energy Points!" << endl;
+													}
+													break;
+												case 2:
+													cout << endl;
+													break;
+											}
+										}
+										else {
+											cout << endl;
+											cout << "Not enough Energy Points!" << endl;
+										}
+									}
+								}
+							}
+							break;
+					}
 					break;
 			}
 			if (gate1Activated) {
@@ -551,6 +852,8 @@ void bossFight() {
 						gate2Activated = false;
 						playerATK /= 1.4;
 						playerEND /= 1.4;
+						cout << endl;
+						cout << "Gate of Healing closed!" << endl;
 						cout << "Attack Power now reduced to " << playerATK << endl;
 						cout << "Endurance now reduced to " << playerEND << endl;
 					}
@@ -561,6 +864,8 @@ void bossFight() {
 							gate1Activated = false;
 							playerATK /= 1.4;
 							playerEND /= 1.4;
+							cout << endl;
+							cout << "Gate of Opening closed!" << endl;
 							cout << "Attack Power now reduced to " << playerATK << endl;
 							cout << "Endurance now reduced to " << playerEND << endl;
 						}
@@ -570,6 +875,8 @@ void bossFight() {
 							gate1Activated = false;
 							playerATK /= 1.5;
 							playerEND /= 1.5;
+							cout << endl;
+							cout << "Gate of Opening closed!" << endl;
 							cout << "Attack Power now reduced to " << playerATK << endl;
 							cout << "Endurance now reduced to " << playerEND << endl;
 						}
@@ -582,20 +889,79 @@ void bossFight() {
 			pressKey();
 			clearLines();
 		}
-		cout << endl; // Boss Turn
-		cout << endl;
-		playerEP += playerREGENEP;
+		if (bossHP < 0) {
+			cout << endl;
+			cout << "Arlong: \"BLLLAAARRRRGGGGGHHHH!!!\"" << endl;
+			cout << endl;
+			cout << "Arlong falls to the floor." << endl;
+			cout << "Keigan Lee wins!" << endl;
+			cout << endl;
+			bossDefeated = true;
+			fightOver = true;
+			printLine();
+			cout << endl;
+			pressKey();
+			clearLines();
+		}
+		else {
+			cout << endl; // Boss Turn
+			if (bossHP <= 1600 && bossHP > 900) {
+				cout << endl;
+				cout << "Arlong: \"*heavy panting* You know what, I admit it. You are strong, but now, look at my weapon!\"" << endl;
+				cout << "Arlong: \"*draws weapon* Behold, my Kiribachi! Now, test your might, BOY!\"" << endl;
+				cout << endl;
+			}
+			else if (bossHP <= 900 && bossHP > 0) {
+				cout << endl;
+				cout << "Arlong: \"*exhausted* How are still be alive, boy... YOU ARE GOING TO REGRET THIS!!!\"" << endl;
+				cout << "Arlong: \"RRRAAAAAAAGGGGGGGGHHHHHHHHH!!!\"" << endl;
+				cout << endl;
+				cout << "Arlong supercharges, making it his last resort." << endl;
+			}
+			playerDamage = ceil((bossATK - playerEND) / 2);
+			playerHP -= playerDamage;
+			cout << "You take " << playerDamage << "damage!" << endl;
+			cout << endl;
+			if (playerHP <= 0) {
+				cout << endl;
+				cout << "Keigan: \"rrr... ahhh... *falls to the ground*\"" << endl;
+				cout << "Luffy: \"Keigan!!!\"" << endl;
+				cout << "Zoro: \"Oh no...\"" << endl;
+				cout << endl;
+				cout << "Keigan is defeated." << endl;
+				cout << endl;
+				printLine();
+				cout << endl;
+				pressKey();
+				clearLines();
+				fightOver = true;
+			}
+			else {
+				playerEP += playerREGENEP;
+				printLine();
+				cout << endl;
+				pressKey();
+				clearLines();
+			}
+		}
 	}
 }
 
 // Chapter 3
 void chapter3() {
 	cout << endl;
+	cout << "CHAPTER 3" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
 	cout << "Location: Baratie (restaurant ship)" << endl;
 	cout << endl; 
 	cout << "Wielding Bell-mere\'s headband, Keigan sails to Baratie, where he\'s greeted by the most popular pirate crew in the world: The Straw Pirates." << endl;
 	cout << "A while later, Don Krieg and his armada attack them. Dracule Mihawk and Zoro fighting each other, with Zoro exhausted but still living." << endl;
-	cout << "As the armada left onboard the Going Merry, one glimpse of the eye caught Keigan\'s attention." << endl;
+	cout << "As the crew left onboard the Going Merry, one glimpse of the eye caught Keigan\'s attention." << endl;
 	cout << endl;
 	cout << "Keigan: \"*silent* Nami...?\"" << endl;
 	cout << endl;
@@ -639,16 +1005,145 @@ void chapter3() {
 	cout << endl;
 	pressKey();
 	clearLines();
+	bossFight();
 }
 
 // Chapter 4
 void chapter4() {
-
+	cout << endl;
+	cout << "Arlong Kiribachi acquired!" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << "CHAPTER 4" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << "Location: Arlong Park" << endl;
+	cout << endl;
+	cout << "Arlong Park falls, and all fishmen were defeated. The Marines retreat." << endl;
+	cout << "The Cocoyashi Village is finally saved thanks to Keigan and the Pirates." << endl;
+	cout << "Everything settles after it crumbled. Prisoners free, Keigan collapsed on the floor, the battle was very exhausting." << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << "Location: Arlong Park" << endl;
+	cout << endl;
+	cout << "Luffy: \"Finally! We did it!\"" << endl;
+	cout << "Keigan: \"*in his mind* Ahh... At last, Bell-mere, we can finally rest.\"" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << "Location: Bell-mere\'s grave" << endl;
+	cout << endl;
+	cout << "Keigan and the crew came back, along with a happy and joyous Nami, at the site which she was buried." << endl;
+	cout << "Remembrance spilled the place with tears of joy, and Keigan, carrying the band on his shoulder, laid it down on her tombstone." << endl;
+	cout << endl;
+	cout << "Keigan: \"I once hoped when you\'re alive, we can celebrated together. This is for you, Bell-mere.\"" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << "Location: Cocoyashi Village" << endl;
+	cout << endl;
+	cout << "THREE DAYS LATER" << endl;
+	cout << endl;
+	cout << "As the festival comes to an end, however, Nami prepares to leave with the Straw Hats, visiting Doctor Nako to have her wounds patched up." << endl;
+	cout << "Genzo and Keigan visit the grave one final time before leaving." << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << "Location: Cocoyashi Docks" << endl;
+	cout << endl;
+	cout << "At the last minute, Luffy turned around looking at Keigan and smiles." << endl;
+	cout << endl;
+	cout << "Luffy: \"Hey, pal! You look strong! come with us!\"" << endl;
+	cout << "Keigan: \"*in shock* Wait, huh? Really? Guess I\'ll handle the bookkeeping, then.\"" << endl;
+	cout << "Celebration erupted in the Going Merry, and Keigan watches the village happily one last time." << endl;
+	cout << "The ship sets sail, and he can finally feel the breeze once again." << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << "Unfortunately, there comes the trouble at the newspaper..." << endl;
+	cout << endl;
+	cout << "Nami: \"Uhh... guys... Come here at see this.\"" << endl;
+	cout << "Keigan: \"Uh... what is happening?\"" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << "The newspaper:" << endl;
+	cout << "Straw Hat Monkey D. Luffy - 30,000,000 Beli" << endl;
+	cout << "Jet Lee Keigan - 5,000,000 Beli" << endl;
+	cout << endl;
+	cout << "Usopp: \"Wait a minute, what do you mean he is the \'Jet\'? Did he actually got that title?\"" << endl;
+	cout << endl;
+	cout << "Everyone now knows who he is now, and where he stays." << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << setw(20) << "T H E   E N D" << setw(20) << endl;
+	cout << endl;
+	cout << "It is not the actual physical exertion that counts towards one\'s progress, nor the nature of the task, but by the spirit of faith with which it is undertaken." << endl;
+	cout << setw(40) << "- St. Francis Xavier" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
 }
 
 // Alternate Ending
 void altEnding() {
-	
+	cout << endl;
+	cout << "Keigan is defeated, again, and thrown into the ocean, again." << endl;
+	cout << "After sinking into the ocean, he wakes up, only to find himself being 8 years old." << endl;
+	cout << "He stands up in confusion, and everything goes back to the way it was, no Arlong, the village still at peace." << endl;
+	cout << endl;
+	cout << "Keigan: \"*silent* Is this... all a dream? Can I really defeat Arlong?\"" << endl;
+	cout << endl;
+	cout << "The vision dissolves into silence." << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
+	cout << endl;
+	cout << endl;
+	cout << setw(20) << "T H E   E N D" << setw(20) << endl;
+	cout << endl;
+	cout << "Take care, take care, never to close your heart to anyone." << endl;
+	cout << setw(40) << "- St. Pierre Fabier" << endl;
+	cout << endl;
+	printLine();
+	cout << endl;
+	pressKey();
+	clearLines();
 }
 
 // Disclaimer
@@ -667,6 +1162,9 @@ void warningScreen() {
     cout << "               animation.               " << endl;
     cout << endl;
     cout << "  Viewer Discretion is Advised. (18+)   " << endl;
+	cout << endl;
+	cout << "   Also, the work in this game is not   " << endl;
+	cout << " made by AI. Always use it responsibly. " << endl;
     cout << endl;
     printLine();
     cout << endl;
@@ -747,6 +1245,22 @@ void playGame() {
 	chapter2();
 	chapter3();
 	if (bossDefeated) {
+		chapter4();
+		cout << "Congratulations, " << playerNickname << "! You just won the game!" << endl;
+		cout << "Full Name: " << playerName << endl;
+		printLine();
+		cout << endl;
+		pressKey();
+		clearLines();
+	}
+	else {
+		altEnding();
+		cout << "Nice try, " << playerNickname << ", but keep going try again!" << endl;
+		cout << "Full Name: " << playerName << endl;
+		printLine();
+		cout << endl;
+		pressKey();
+		clearLines();
 	}
 }
 
