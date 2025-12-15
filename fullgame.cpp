@@ -390,36 +390,110 @@ void bossFight() {
 	int playerDamage = 0; // Player Damage
 	int barrageCooldown = 0; // Barrage Cooldown
 	int	lotusCooldown = 0; // Lotus Cooldown
+	int barrageCountdown = 0; // Determine if Barrage is used last turn
+	int gate1BasicCountdown = 0; // If Gate 1 basic cooldown is applied last turn
+	int gate1MasteredCountdown = 0; // If Gate 1 mastered cooldown is applied last turn
+	int gate2Countdown = 0; // If Gate 2 cooldown is applied last turn
 	bool fightOver = false; // Full Fight
 	bool playerInTurn = false; // Player in Turn
 	bool canActivateGate = false; // Gate Available
 	bool gate1Activated = false; // Gate 1 Active
 	bool gate2Activated = false; // Gate 2 Active
-	bool hasUsedGateBefore = false; // Gate Used Once
+	bool hasUsedGate1Before = false; // Gate 1 Used once
+	bool hasUsedGate2Before = false; // Gate 2 Used once
 	bool hasMasteredGates = false; // Gate Mastery
 	bool chainsEnabled = false; // Use Chains
-	bool hasUsedBarrage = false; // Barrage Used
 	bool hasUsedFrontLotus = false; // Front Lotus Used
 	bool staggeredArlong = false; // Arlong Staggered
 	bool disarmArlong = false; // Arlong Disarmed
 	while (!fightOver) {
 		++playerTurn;
-		if (lotusCooldown > 0) {
-			--lotusCooldown;
+		playerEP += playerREGENEP;
+		if (gate1BasicCountdown == 1) {
+			playerATK *= (1.5 / 1.8);
+			playerEND *= (1.5 / 1.8);
+			cout << endl;
+			cout << "Your Attack has returned to " << playerATK << "!" << endl;
+			cout << "Your Endurance has returned to " << playerEND << "!" << endl;
+			cout << endl;
+			printLine();
+			cout << endl;
+			pressKey();
+			clearLines();
 		}
-		if (barrageCooldown > 0) {
-			--barrageCooldown;
+		if (gate1MasteredCountdown == 1) {
+			playerATK *= (1.4 / 1.8);
+			playerEND *= (1.4 / 1.8);
+			cout << endl;
+			cout << "Your Attack has returned to " << playerATK << "!" << endl;
+			cout << "Your Endurance has returned to " << playerEND << "!" << endl;
+			cout << endl;
+			printLine();
+			cout << endl;
+			pressKey();
+			clearLines();
+		}
+		if (gate2Countdown == 1) {
+			playerATK *= (1.4 / 2.2);
+			playerEND *= (1.4 / 2.2);
+			cout << endl;
+			cout << "Your Attack has returned to " << playerATK << "!" << endl;
+			cout << "Your Endurance has returned to " << playerEND << "!" << endl;
+			cout << endl;
+			printLine();
+			cout << endl;
+			pressKey();
+			clearLines();
 		}
 		if (gate1Activated) {
 			if (hasMasteredGates) {
 				playerEP -= 5;
+				if (playerEP < 5) {
+					playerATK /= 1.5;
+					playerEND /= 1.5;
+					gate1MasteredCountdown = 2;
+					cout << endl;
+					cout << "Your Attack has dropped to " << playerATK << "!" << endl;
+					cout << "Your Endurance has dropped to " << playerEND << "!" << endl;
+					cout << endl;
+					printLine();
+					cout << endl;
+					pressKey();
+					clearLines();
+				}
 			}
 			else {
 				playerEP -= 7;
+				if (playerEP < 7) {
+					playerATK /= 1.5;
+					playerEND /= 1.5;
+					gate1BasicCountdown = 2;
+					cout << endl;
+					cout << "Your Attack has dropped to " << playerATK << "!" << endl;
+					cout << "Your Endurance has dropped to " << playerEND << "!" << endl;
+					cout << endl;
+					printLine();
+					cout << endl;
+					pressKey();
+					clearLines();
+				}
 			}
 		}
 		else if (gate2Activated) {
 			playerEP -= 9;
+			if (playerEP < 9) {
+				playerATK /= 1.4;
+				playerEND /= 1.4;
+				gate2Countdown = 2;
+				cout << endl;
+				cout << "Your Attack has dropped to " << playerATK << "!" << endl;
+				cout << "Your Endurance has dropped to " << playerEND << "!" << endl;
+				cout << endl;
+				printLine();
+				cout << endl;
+				pressKey();
+				clearLines();
+			}
 		}
 		playerInTurn = true;
 		while (playerInTurn) {
@@ -436,459 +510,415 @@ void bossFight() {
 			cout << endl;
 			cout << "Choose your ability: " << endl;
 			cout << endl;
-			cout << "0. Normal Attack" << endl;
-			cout << "1. Enable Lotus Series" << endl;
-			cout << "2. Kei-ga-n Barrage (-12 EP and 2 skips)" << endl;
-			cout << "3. Chain Barrage (-14 EP and 2 skips)" << endl;
-			cout << "4. Lotus Attack";
-			if (!chainsEnabled) {
-				cout << " (disabled)" << endl;
+			cout << "1. Normal Attack" << endl;
+			cout << "2. Lotus Series";
+			if (chainsEnabled) {
+				cout << " (active)" << endl;
 			}
 			else {
-				cout << endl;
-			}
-			cout << "5. Eight Gates";
-			if (playerTurn < 3) {
 				cout << " (disabled)" << endl;
 			}
+			cout << "3. Kei-ga-n Barrage";
+			if ((playerEP >= 12) && (barrageCooldown == 0)) {
+				cout << " (-12 EP, 2 CD)" << endl;
+			}
 			else {
-				cout << endl;
+				cout << " (locked)" << endl;
 			}
-			cout << endl;
-			pressChoice();
-			switch (choiceKey) {
-				case 0:
-					clearKey();
-					bossDamage = ceil((playerATK - bossEND) / 2);
-					bossHP -= bossDamage;
-					cout << endl;
-					cout << "Keigan: \"HAAYYYYAAAH!!!\"" << endl;
-					cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
-					bossDamage = 0;
-					break;
-				case 1:
-					clearKey();	
-					cout << "Activate Lotus Series?" << endl;
-					cout << endl;
-					cout << "1 for Yes, 2 for No" << endl;
-					cout << endl;
-					pressChoice();
-					switch (choiceKey) {
-						case 1:
-							clearKey();
-							chainsEnabled = true;
-							break;
-						case 2:
-							clearKey();
-							break;
-					}
-					break;
-				case 2:
-					clearKey();	
-					if (playerEP >= 12) {
-						if (barrageCooldown = 0) {	
-							cout << endl;
-							cout << "Attack with Kei-ga-n Barrage?" << endl;
-							cout << endl;
-							cout << "1 for Yes, 2 for No" << endl;
-							cout << endl;
-							pressChoice();
-							switch (choiceKey) {
-								case 1:
-									clearKey();
-									hasUsedBarrage = true;
-									playerEP -= 12;
-									bossDamage = ceil(((1.35 * playerATK) - (0.95 * bossEND)) / 2);
-									bossHP -= bossDamage;
-									cout << "Keigan: \"Take this, K E I - G A - N BARRAGE!!!\"" << endl;
-									cout << endl;
-									cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
-									bossDamage = 0;
-									playerInTurn = false;
-									barrageCooldown = 3;
-									break;
-								case 2:
-									clearKey();
-									break;
-							}
-						}
-						else {
-							cout << endl;
-							cout << "Ability on Cooldown!" << endl;
-						}
-					}
-					else {
-						cout << endl;
-						cout << "Not enough Energy Points!" << endl;
-					}
-					break;
-				case 3:
-					if (playerEP >= 14)	{
-						if (barrageCooldown = 0) {	
-							clearKey();	
-							cout << endl;
-							cout << "Attack with Chained Barrage?" << endl;
-							cout << endl;
-							cout << "1 for Yes, 2 for No" << endl;
-							cout << endl;
-							pressChoice();
-							switch (choiceKey) {
-								case 1:
-									clearKey();
-									hasUsedBarrage = true;
-									playerEP -= 14;
-									bossDamage = ceil(((1.5 * playerATK) - (0.90 * bossEND)) / 2);
-									bossHP -= bossDamage;
-									cout << "Keigan: \"Watch this, Arlong! CHAAAAIIINNNNEEEED BARRAGE!!!\"" << endl;
-									cout << endl;
-									cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
-									bossDamage = 0;
-									playerInTurn = false;
-									barrageCooldown = 3;
-									break;
-								case 2:
-									clearKey();
-									break;
-							}
-						}
-						else {
-							cout << endl;
-							cout << "Ability on cooldown!" << endl;
-						}
-					}
-					else {
-						cout << endl;
-						cout << "Not enough Energy Points!" endl;
-					}
-					break;
-				case 4:
-					clearKey();
-					cout << endl;
-					if (chainsEnabled) {
-						if (gate1Activated || gate2Activated) {
-							if (hasUsedBarrage) {
-								cout << endl;
-								cout << "Choose Lotus Attack:" << endl;
-								cout << endl;
-								cout << "1. Front Lotus (Omote Renge)" << endl;
-								cout << "2. Reverse Lotus (Ura Renge)";
-								if (!gate1Activated || !gate2Activated || !hasUsedFrontLotus) {
-									cout << " (disabled)" << endl;
-								}
-								else {
-									cout << endl;
-								}
-								switch (choiceKey) {
-									case 1:	
-										if (playerEP >= 13) {
-											cout << endl;
-											cout << "Attack with Front Lotus now?" << endl;
-											cout << endl;
-											cout << "1 for Yes, 2 for No" << endl;
-											cout << endl;
-											pressChoice();
-											switch (choiceKey) {
-												case 1:
-													clearKey();
-													if (playerEP >= 13) {
-														playerEP -= 13;
-														bossDamage = ceil(((3.8 * playerATK) - (0.7 * bossEND)) / 2);
-														bossHP -= bossDamage;
-														cout << "Keigan: \"Taste this with the might of my OMOTE RENGE!\"" << endl;
-														cout << endl;
-														cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
-														bossDamage = 0;
-														staggeredArlong = true;
-														playerInTurn = false;
-													}
-													else {
-														cout << endl;
-														cout << "Not enough Energy Points!" << endl;
-													}
-													break;
-												case 2:
-													clearKey();
-													break;
-											}
-										}
-										else {
-											cout << endl;
-											cout << "Not enough Energy Points!" << endl;
-										}
-										break;
-									case 2:
-										if (lotusCooldown = 0) {
-											cout << endl;
-											cout << "Attack with Reverse Lotus now?" << endl;
-											cout << endl;
-											cout << "1 for Yes, 2 for No" << endl;
-											cout << endl;
-											pressChoice();
-											switch (choiceKey) {
-												case 1:
-													clearKey();
-													if (playerEP >= 25) {	
-														if (hasUsedFrontLotus) {
-															if (!gate2Activated) {	
-																playerEP -= 25;
-																cout << endl;
-																bossDamage = ceil(((5 * playerATK) - (0.65 * bossEND)) / 2);
-																bossHP -= bossDamage;
-																cout << "Keigan: \"Burn to ashes with the power of my URA RENGE!\"" << endl;
-																cout << endl;
-																cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
-																bossDamage = 0;
-																playerInTurn = false; 
-																staggeredArlong = true;
-																lotusCooldown = 6;
-															}
-															else {
-																playerEP -= 25;
-																cout << endl;
-																bossDamage = ceil(((6.25 * playerATK) - (0.65 * bossEND)) / 2);
-																bossHP -= bossDamage;
-																cout << "Keigan: \"Burn to ashes with the power of my URA RENGE!\"" << endl;
-																cout << endl;
-																cout << "You deal " << bossDamage << " damage to Arlong!" << endl;
-																bossDamage = 0;
-																playerInTurn = false; 
-																staggeredArlong = true;
-																lotusCooldown = 6;
-															}
-														}
-														else {
-															cout << endl;
-															cout << "You must use Front Lotus in the last turn!" << endl;
-														}
-													}
-													else {
-														cout << endl;
-														cout << "Not enough Energy Points!" << endl;
-													}
-													break;
-												case 2;
-													clearKey();
-													break;
-											}
-										}
-										else {
-											cout << endl;
-											cout << "Ability on cooldown!" << endl;
-										}
-										break;
-								}
+			cout << "4. Chain Barrage" << endl;
+			if ((playerEP >= 14) && (barrageCooldown == 0)) {
+				cout << " (-14 EP, 2 CD)" << endl;
+			}
+			else {
+				cout << " (locked)" << endl;
+			}
+			cout << "5. Gate of Opening";
+			if (hasMasteredGates) {
+				cout << " \"Mastered\"";
+			}
+			else {
+				cout << " \"Basic\"";
+			}
+			if (playerTurn == 3) {
+				if (gate1Activated) {
+					cout << " (active)" << endl;
+				}
+				else {
+					if (hasUsedGate1Before) {
+						if (hasMasteredGates) {
+							if (playerEP >= 1.5 * 30) {
+								cout << " (-" << 1.5 * 30 << " EP)" << endl;
 							}
 							else {
-								cout << endl;
-								cout << "You must execute a Barrage Attack in order to continue!" << endl;
+								cout << " (locked)" << endl;
 							}
 						}
 						else {
-							cout << endl;
-							cout << "The Eight Gates must be activated!" << endl;
+							if (playerEP >= 1.5 * 35) {
+								cout << " (-" << 1.5 * 30 << " EP)" << endl;
+							}
+							else {
+								cout << " (locked)" << endl;
+							}
 						}
 					}
 					else {
-						cout << endl;
-						cout << "You must equip the Chain Relic!" << endl;
-					}
-					break;
-				case 5:
-					clearKey();
-					cout << endl;
-					cout << "Activate the Eight Gates:" << endl;
-					cout << endl;
-					cout << "1. Activate Gate 1" << endl;
-					cout << "2. Activate Gate 2" << endl;
-					cout << endl;
-					pressChoice();
-					switch (choiceKey) {
-						case 1:
-							clearKey();
-							if (gate1Activated) {
-								cout << endl;
-								cout << "Gate of Opening already active!" << endl;
-								cout << endl;
-								cout << "Do you want to disable Gate of Opening?" << endl;
-								cout << endl;
-								cout << "1 for Yes, 2 for No" << endl;
-								cout << endl;
-								pressChoice();
-								switch (choiceKey) {
-									case 1:
-										gate1Activated = false;
-										if (!hasMasteredGates) {
-											playerATK /= 1.4;
-											playerEND /= 1.4;
-											cout << endl;
-											cout << "Attack Power now reduced to " << playerATK << endl;
-											cout << "Endurance now reduced to " << playerEND << endl;
-										}
-										break;
-									case 2:
-										cout << endl;
-										break;
-								}
+						if (hasMasteredGates) {
+							if (playerEP >= 30) {
+								cout << " (-30 EP)" << endl;
 							}
 							else {
-								if (!hasUsedGateBefore) {
-									if (!hasMasteredGates) {
-										if (playerEP >= 35) {	
-											playerEP -= 35;
-											playerATK *= 1.8;
-											cout << endl;
-											cout << "Gate of Opening active!" << endl;
-											cout << endl;
-											cout << "Your Attack increases by 1.8!" << endl;
-											cout << "Current ATK: " << playerATK << endl;
-										}
-										else {
-											cout << endl;
-											cout << "Not enough Energy Points!" << endl;
-										}
-									}
-									else {
-										if (playerEP >= 30) {
-											playerEP -= 30;
-											playerATK = 1.8;
-											cout << endl;
-											cout << "Gate of Opening active!" << endl;
-											cout << "Your Attack increases by 1.8!" << endl;
-											cout << "Current ATK: " << playerATK << endl;
-											cout << endl;
-											cout << "Do you wish to unlock Gate of Healing?" << endl;
-											cout << endl;
-											cout << "1 for Yes, 2 for No" << endl;
-											cout << endl;
-											pressChoice();
-											switch (choiceKey) {
-												case 1:
-													if (playerEP >= 10) {
-														playerEP -= 10;
-														playerATK *= 2.2;
-														cout << endl;
-														cout << "Your Attack increases by 2.2!" << endl;
-														cout << "Current ATK: " << playerATK << endl;
-													}
-													else {
-														cout << endl;
-														cout << "Not enough Energy Points!" << endl;
-													}
-													break;
-												case 2:
-													cout << endl;
-													break;
-											}
-										}
-										else {
-											cout << endl;
-											cout << "Not enough Energy Points!" << endl;
-										}
-									}
-								}
-								else {
-									if (!hasMasteredGates) {
-										if (playerEP >= 1.5 * 35) {	
-											playerEP -= 1.5 * 35;
-											playerATK *= 1.8;
-											cout << endl;
-											cout << "Gate of Opening active!" << endl;
-											cout << endl;
-											cout << "Your Attack increases by 1.8!" << endl;
-											cout << "Current ATK: " << playerATK << endl;
-										}
-										else {
-											cout << endl;
-											cout << "Not enough Energy Points!" << endl;
-										}
-									}
-									else {
-										if (playerEP >= 1.5 * 30) {
-											playerEP -= 1.5 * 30;
-											playerATK = 1.8;
-											cout << endl;
-											cout << "Gate of Opening active!" << endl;
-											cout << "Your Attack increases by 1.8!" << endl;
-											cout << "Current ATK: " << playerATK << endl;
-											cout << endl;
-											cout << "Do you wish to unlock Gate of Healing?" << endl;
-											cout << endl;
-											cout << "1 for Yes, 2 for No" << endl;
-											cout << endl;
-											pressChoice();
-											switch (choiceKey) {
-												case 1:
-													if (playerEP >= 1.5 * 10) {
-														playerEP -= 1.5 * 10;
-														playerATK *= 2.2;
-														cout << endl;
-														cout << "Your Attack increases by 2.2!" << endl;
-														cout << "Current ATK: " << playerATK << endl;
-													}
-													else {
-														cout << endl;
-														cout << "Not enough Energy Points!" << endl;
-													}
-													break;
-												case 2:
-													cout << endl;
-													break;
-											}
-										}
-										else {
-											cout << endl;
-											cout << "Not enough Energy Points!" << endl;
-										}
-									}
-								}
+								cout << " (locked)" << endl;
 							}
-							break;
+						}
+						else {
+							if (playerEP >= 35) {
+								cout << " (-35 EP)" << endl;
+							}
+							else {
+								cout << " (locked)";
+							}
+						}
 					}
-					break;
+				}
 			}
-			if (gate1Activated) {
-				if (gate2Activated) {
-					if (playerEP < 9) {
-						gate2Activated = false;
-						playerATK /= 1.4;
-						playerEND /= 1.4;
-						cout << endl;
-						cout << "Gate of Healing closed!" << endl;
-						cout << "Attack Power now reduced to " << playerATK << endl;
-						cout << "Endurance now reduced to " << playerEND << endl;
+			else {
+				cout << " (locked until Turn 3)" << endl;
+			}
+			cout << "6. Gate of Healing";
+			if (gate2Activated) {
+				cout << " (active)" << endl;
+			}
+			else {
+				if (hasUsedGate2Before) {
+					if (hasMasteredGates) {
+						if (playerEP >= 1.5 * 45) {
+							cout << " (-" << 1.5 * 45 << " EP)" << endl;
+						}
+						else {
+							cout << " (locked)" << endl;
+						}
+					}
+					else {
+						cout << " (locked)" << endl;
 					}
 				}
 				else {
 					if (hasMasteredGates) {
-						if (playerEP < 5) {
-							gate1Activated = false;
-							playerATK /= 1.4;
-							playerEND /= 1.4;
-							cout << endl;
-							cout << "Gate of Opening closed!" << endl;
-							cout << "Attack Power now reduced to " << playerATK << endl;
-							cout << "Endurance now reduced to " << playerEND << endl;
+						if (gate1Activated && (playerEP >= 10)) {
+							cout << " (-10 EP)" << endl;
+						}
+						else {
+							cout << " (locked)" << endl;
 						}
 					}
 					else {
-						if (playerEP < 7) {
-							gate1Activated = false;
-							playerATK /= 1.5;
-							playerEND /= 1.5;
-							cout << endl;
-							cout << "Gate of Opening closed!" << endl;
-							cout << "Attack Power now reduced to " << playerATK << endl;
-							cout << "Endurance now reduced to " << playerEND << endl;
-						}
+						cout << " (locked)" << endl;
 					}
 				}
+			}
+			cout << "7. Front Lotus/Omote Renge";
+			if (chainsEnabled && (gate1Activated || gate2Activated) && (barrageCountdown == 1) && (playerEP >= 13)) {
+				cout << " (-13 EP)" << endl;
+			}
+			else {
+				cout << " (locked)" << endl;
+			}
+			cout << "8. Reverse Lotus";
+			if ((playerEP >= 25) && (gate1Activated || gate2Activated) && hasUsedFrontLotus) {
+				cout << " (-25 EP)" << endl;
+			}
+			else {
+				cout << " (locked)" << endl;
+			}
+			pressChoice();
+			switch (choiceKey) {
+				case 1:
+					cout << endl;
+					cout << "Keigan: \"HAAAIIIYAAAAHHH!\"" << endl;
+					bossDamage = ceil((playerATK - bossEND) / 2);
+					bossHP -= bossDamage;
+					cout << endl;
+					cout << "You deal " << bossDamage << " damage!" << endl;
+					bossDamage = 0;
+					playerInTurn = false;
+					break;
+				case 2:
+					chainsEnabled = true;
+					cout << endl;
+					cout << "Chain Equipped!";
+					playerInTurn = false;
+					break;
+				case 3:
+					if (barrageCooldown == 0) {
+						if (playerEP >= 12) {
+							playerEP -= 12;
+							cout << endl;
+							cout << "Keigan: \"Take this! K E I - G A - N BARRAGE!\"" << endl;
+							bossDamage = ceil(((1.35 * playerATK) - (0.95 * bossEND)) / 2);
+							bossHP -= bossDamage;
+							cout << endl;
+							cout << "You deal a total of " << bossDamage << " damage!" << endl;
+							bossDamage = 0;
+							barrageCountdown = 2;
+							barrageCooldown = 3;
+							playerInTurn = false;
+						}
+						else {
+							cout << endl;
+							cout << "Not enough Energy!" << endl;
+						}
+					}
+					else {
+						cout << endl;
+						cout << "Not ready to use yet!" << endl;
+					}
+					break;
+				case 4:
+					if (barrageCooldown == 0) {	
+						if (playerEP >= 14) {	
+							playerEP -= 14;
+							cout << endl;
+							cout << "Keigan: \"Behold my power! C H A I N BARRAGE!\"" << endl;
+							bossDamage = ceil(((1.5 * playerATK) - (0.9 * bossEND)) / 2);
+							bossHP -= bossDamage;
+							cout << endl;
+							cout << "You deal a total of " << bossDamage << " damage!" << endl;
+							bossDamage = 0;
+							barrageCountdown = 2;
+							barrageCooldown = 3;
+							playerInTurn = false;
+						}
+						else {
+							cout << endl;
+							cout << "Not enough Energy!" << endl;
+						}
+					}
+					else {
+						cout << endl;
+						cout << "Not ready to use yet!" << endl;
+					}
+					break;
+				case 5:
+					if (playerTurn == 3) {
+						if (gate1Activated) {
+							!gate1Activated;
+							cout << endl;
+							cout << "Gate of Opening deactivated!" << endl;
+							if (hasMasteredGates) {
+								playerATK /= 1.4;
+								playerEND /= 1.4;
+								cout << endl;
+								cout << "Your Attack has dropped to " << playerATK << "!" << endl;
+								cout << "Your Endurance has dropped to " << playerEND << "!" << endl;
+								playerInTurn = false;
+								gate2Countdown = 2;
+							}
+							else {
+								playerATK /= 1.5;
+								playerEND /= 1.5;
+								cout << endl;
+								cout << "Your Attack has dropped to " << playerATK << "!" << endl;
+								cout << "Your Endurance has dropped to " << playerEND << "!" << endl;
+								playerInTurn = false;
+								gate2Countdown = 2;
+							}
+						}
+						else {
+							if (hasUsedGate1Before) {
+								if (hasMasteredGates) {
+									if (playerEP >= 1.5 * 30) {
+										playerEP -= 1.5 * 30;
+										cout << endl;
+										cout << "Gate of Opening activated!" << endl;
+										playerATK *= 1.8;
+										playerEND *= 1.8;
+										cout << endl;
+										cout << "Your Attack has increased to " << playerATK << "!" << endl;
+										cout << "Your Endurance has increased to " << playerEND << "!" << endl;
+										playerInTurn = false;
+									}
+									else {
+										cout << endl;
+										cout << "Not enough Energy!" << endl;
+									}
+								}
+								else {
+									if (playerEP >= 1.5 * 35) {
+										playerEP -= 1.5 * 35;
+										cout << endl;
+										cout << "Gate of Opening activated!" << endl;
+										playerATK *= 1.8;
+										playerEND *= 1.8;
+										cout << endl;
+										cout << "Your Attack has increased to " << playerATK << "!" << endl;
+										cout << "Your Endurance has increased to " << playerEND << "!" << endl;
+									}
+									else {
+										cout << endl;
+										cout << "Not enough Energy!" << endl;
+									}
+								}
+							}
+							else {
+								if (hasMasteredGates) {
+									if (playerEP >= 30) {
+										playerEP -= 30;
+										cout << endl;
+										cout << "Gate of Opening activated!" << endl;
+										playerATK *= 1.8;
+										playerEND *= 1.8;
+										cout << endl;
+										cout << "Your Attack has increased to " << playerATK << "!" << endl;
+										cout << "Your Endurance has increased to " << playerEND << "!" << endl;
+									}
+									else {
+										cout << endl;
+										cout << "Not enough Energy!" << endl;
+									}
+								}
+								else {
+									if (playerEP >= 35) {
+										playerEP -= 35;
+										cout << endl;
+										cout << "Gate of Opening activated!" << endl;
+										playerATK *= 1.8;
+										playerEND *= 1.8;
+										cout << endl;
+										cout << "Your Attack has increased to " << playerATK << "!" << endl;
+										cout << "Your Endurance has increased to " << playerEND << "!" << endl;
+									}
+									else {
+										cout << endl;
+										cout << "Not enough Energy!";
+									}
+								}
+							}
+						}
+					}
+					else {
+						cout << endl;
+						cout << "Not ready to use yet!" << endl;
+					}
+					break;
+				case 6:
+					if (gate2Activated) {
+						!gate2Activated;
+						cout << endl;
+						cout << "Gate of Healing deactivated!" << endl;
+						playerATK /= 1.4;
+						playerEND /= 1.4;
+						cout << endl;
+						cout << "Your Attack has dropped to " << playerATK << "!" << endl;
+						cout << "Your Endurance has dropped to " << playerEND << "!" << endl;
+						gate2Countdown = 2;
+						playerInTurn = false;
+					}
+					else {
+						if (hasUsedGate2Before) {
+							if (hasMasteredGates) {
+								if (playerEP >= 1.5 * 45) {
+									playerEP -= 1.5 * 45;
+									cout << endl;
+									cout << "Gate of Healing activated!" << endl;
+									playerATK *= 2.2;
+									playerEND *= 2.2;
+									cout << endl;
+									cout << "Your Attack has increased to " << playerATK << "!" << endl;
+									cout << "Your Endurance has increased to " << playerEND << "!" << endl;
+									playerInTurn = false;
+								}
+								else {
+									cout << endl;
+									cout << "Not enough Energy!" << endl;
+								}
+							}
+							else {
+								cout << endl;
+								cout << "Must have mastered Gate of Opening!" << endl;
+							}
+						}
+						else {
+							if (hasMasteredGates) {
+								if (gate1Activated && (playerEP >= 10)) {
+									playerEP -= 10;
+									cout << endl;
+									cout << "Gate of Healing activated!" << endl;
+									playerATK *= 2.2;
+									playerEND *= 2.2;
+									cout << endl;
+									cout << "Your Attack has increased to " << playerATK << "!" << endl;
+									cout << "Your Endurance has increased to " << playerEND << "!" << endl;
+									playerInTurn = false;
+								}
+								else {
+									cout << endl;
+									cout << "Not enough Energy!" << endl;
+								}
+							}
+							else {
+								cout << endl;
+								cout << "Must have mastered Gate of Opening!" << endl;
+							}
+						}
+					}
+					break;
+				case 7:
+					if (chainsEnabled && (gate1Activated || gate2Activated) && (barrageCountdown == 1) && (playerEP >= 13)) {
+						playerEP -= 13;
+						cout << endl;
+						cout << "Keigan: \"Catch this, Arlong! O M O T E   R E N G E ! ! !\"" << endl;
+						bossDamage = ceil(((2.85 * playerATK) - (0.7 * bossEND)) / 2);
+						bossHP -= bossDamage;
+						cout << endl;
+						cout << "You deal a total of " << bossDamage << " damage!" << endl;
+						bossDamage = 0;
+						playerInTurn = false;
+					}
+					else {
+						cout << endl;
+						cout << "Cannot use it at this time!" << endl;
+					}
+					break;
+				case 8:
+					if ((playerEP >= 25) && (gate1Activated || gate2Activated) && hasUsedFrontLotus) {
+						if (gate2Activated) {	
+							playerEP -= 25;
+							cout << endl;
+							cout << "Keigan: \"This is the end! U U U R R R A A A    R R E E N N G G E E ! ! !\"" << endl;
+							bossDamage = ceil(((6.25 * playerATK) - (0.65 * bossEND)) / 2);
+							bossHP -= bossDamage;
+							cout << endl;
+							cout << "You deal a total of " << bossDamage << " damage!" << endl;
+							bossDamage = 0;
+							lotusCooldown = 6;
+							playerInTurn = false;
+						}
+						else {
+							playerEP -= 25;
+							cout << endl;
+							cout << "Keigan: \"This is the end! U U U R R R A A A    R R E E N N G G E E ! ! !\"" << endl;
+							bossDamage = ceil(((5 * playerATK) - (0.65 * bossEND)) / 2);
+							bossHP -= bossDamage;
+							cout << endl;
+							cout << "You deal a total of " << bossDamage << " damage!" << endl;
+							bossDamage = 0;
+							lotusCooldown = 6;
+							playerInTurn = false;
+						}
+					}
+					else {
+						cout << endl;
+						cout << "Cannot use it at this time!" << endl;
+					}
+					break;
 			}
 			cout << endl;
 			printLine();
 			cout << endl;
 			pressKey();
 			clearLines();
-		}
+		}	
 		if (bossHP < 0) {
 			cout << endl;
 			cout << "Arlong: \"BLLLAAARRRRGGGGGHHHH!!!\"" << endl;
@@ -904,7 +934,6 @@ void bossFight() {
 			clearLines();
 		}
 		else {
-			cout << endl; // Boss Turn
 			if (bossHP <= 1600 && bossHP > 900) {
 				cout << endl;
 				cout << "Arlong: \"*heavy panting* You know what, I admit it. You are strong, but now, look at my weapon!\"" << endl;
@@ -918,10 +947,31 @@ void bossFight() {
 				cout << endl;
 				cout << "Arlong supercharges, making it his last resort." << endl;
 			}
-			playerDamage = ceil((bossATK - playerEND) / 2);
-			playerHP -= playerDamage;
-			cout << "You take " << playerDamage << "damage!" << endl;
-			cout << endl;
+			if (staggeredArlong) {
+				cout << endl;
+				cout << "Arlong is staggered! Cannot attack!" << endl;
+				cout << endl;
+				printLine();
+				cout << endl;
+				pressKey();
+				clearLines();
+			}
+			else if (disarmArlong) {
+				cout << endl;
+				cout << "Arlong\'s Kiribachi is dropped! Cannot attack!" << endl;
+				cout << endl;
+				printLine();
+				cout << endl;
+				pressKey();
+				clearLines();
+			}
+			else {
+				playerDamage = ceil((bossATK - playerEND) / 2);
+				playerHP -= playerDamage;
+				cout << endl;
+				cout << "You take " << playerDamage << "damage!" << endl;
+				cout << endl;
+			}
 			if (playerHP <= 0) {
 				cout << endl;
 				cout << "Keigan: \"rrr... ahhh... *falls to the ground*\"" << endl;
@@ -936,13 +986,24 @@ void bossFight() {
 				clearLines();
 				fightOver = true;
 			}
-			else {
-				playerEP += playerREGENEP;
-				printLine();
-				cout << endl;
-				pressKey();
-				clearLines();
-			}
+		}
+		if (barrageCountdown > 0) {
+			--barrageCooldown;
+		}
+		if (lotusCooldown > 0) {
+			--lotusCooldown;
+		}
+		if (barrageCooldown > 0) {
+			--barrageCooldown;
+		}
+		if (gate1BasicCountdown > 0) {
+			--gate1BasicCountdown;
+		}
+		if (gate1MasteredCountdown > 0) {
+			--gate1MasteredCountdown;
+		}
+		if (gate2Countdown > 0) {
+			--gate2Countdown;
 		}
 	}
 }
@@ -1227,10 +1288,10 @@ void enterName() {
 	cout << "Before you continue, we want to ask for your name." << endl;
 	cout << endl;
 	cout << "Enter your name here: ";
-	cin >> playerName;
+	getline(cin, playerName);
 	cout << endl;
 	cout << "Enter your nickname here: ";
-	cin >> playerNickname;
+	getline(cin, playerNickname);
 	clearLines();
 }
 
